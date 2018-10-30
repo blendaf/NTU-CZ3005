@@ -1,0 +1,18 @@
+brother(peter,warren).
+brother(jerry,kather).
+brother(jerry,stuart).
+male(stuart).
+male(peter).
+male(warren).
+male(jerry).
+female(kather).
+female(ann).
+female(maryalice).
+sister(kather,jerry).
+sister(ann,maryalice).
+parent_of(maryalice,jerry).
+parent_of(warren,jerry).
+
+
+parent(X,Y) :- parent_of(X,S), sibling(S,Y).
+parent(X,Y) :- parent_of(X,Y).

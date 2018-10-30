@@ -1,0 +1,25 @@
+female(ann).
+male(charles).
+male(andrew).
+male(edward).
+
+older_than(charles,ann).
+older_than(charles,andrew).
+older_than(charles,edward).
+older_than(ann,andrew).
+older_than(ann,edward).
+older_than(andrew,edward).
+
+before(X,Y) :- male(X), male(Y), older_than(X,Y).
+before(X,Y) :- male(X), female(Y).
+
+getSuccession(SortedList) :- 
+findall(X, female(X);male(X), List),insert_sort(List, SortedList).
+
+insert_sort(List,Sorted):-i_sort(List,[],Sorted).
+i_sort([],Acc,Acc).
+i_sort([H|T],Acc,Sorted):-insert(H,Acc,NAcc),i_sort(T,NAcc,Sorted).
+
+insert(X,[],[X]).   
+insert(X,[Y|T],[Y|NT]):-before(Y,X),insert(X,T,NT).
+insert(X,[Y|T],[X,Y|T]):- before(X,Y).
