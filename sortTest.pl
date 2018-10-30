@@ -2,6 +2,7 @@ person(5).
 person(1).
 person(7).
 person(2).
+person(1).
 
 insertionsort([],[]).
 insertionsort([A],[A]).
