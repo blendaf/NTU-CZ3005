@@ -7,5 +7,6 @@ invented(sumsum, galactica).
 stolen(steven,galactica,sumsum).
 works_for(steven,appy).
 
+technology(X) :- buisness(X).
 rival(X) :- competitor(X,appy).
 unethical(X) :- boss(X), buisness(Y), rival(Z), company(Z), stolen(X,Y,Z).
