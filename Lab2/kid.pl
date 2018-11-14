@@ -25,13 +25,21 @@ options_followup(Y, L) :- print("what more"), findnsols(100, X, relatedFollow(Y,
 
 /* Ask follow up question and add to list asked as to not ask a question more than once */ 
 valandquery_followup(L) :- 
-	findnsols(100,X,asked(X),AskedList), list_to_set(L,S), list_to_set(AskedList,A), subtract(S,A,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X))), askFollow(X).
+	findnsols(100,X,asked(X),History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X));assert(asked(X))), askFollow(X).
+
+
+
+/* If chosen subject performed by child, find related follow up question */
 
 /* Based upon chosen activity, find a related follow up question */
 related(eat, X):- eat(L),random_member(X, L).
 related(play, X):- play(L),random_member(X, L).
 related(sing, X):- sing(L),random_member(X, L).
 related(game, X):- game(L),random_member(X, L).
+related(behave, X):- behave(L),random_member(X, L).
+related(talk, X):- talk(L),random_member(X, L).
+related(learn, X):- learn(L),random_member(X, L).
+
 
 /* Find a related question */ 
 relatedFollow(Y, X) :- 
@@ -39,22 +47,24 @@ relatedFollow(Y, X) :-
 	play(L),member(X,L),member(Y,L);
 	sing(L),member(X,L),member(Y,L);
 	game(L),member(X,L),member(Y,L);
-	behave(L),member(X,L),member(Y,L).
+	behave(L),member(X,L),member(Y,L);
+	talk(L),member(X,L),member(Y,L);
+	learn(L),member(X,L),member(Y,L).
 
 
 /* Choose random activity */
 random(X):- activity(A), random_member(X,A).
 
 /* List of subjects */ 
-activity([eat, play, sing, game, behave, talk, learn, c, d, f, g, h]).
+activity([eat, play, sing, game, behave, talk, learn, c]).
 
 /* Lists of follow up questions based upon subject */
-eat([spicy, spoon,sweet, full, knife, af, bs, fa, ar, ac, ff]).
+eat([spicy, spoon, salty]).
 play([football, basketball, pirates, floorball]).
-sing([lullaby,song1,song2, song3]).
-game([hungryhippos, cards, jenga, monopoly]).
-behave([thankyou, please, washup, clean]).
-talk([pokemon, something, hahah]).
+sing([lullaby,song1, song2]).
+game([hungryhippos, cards, monopoly]).
+behave([thankyou, please, hello]).
+talk([pokemon, something, something2]).
 learn([math, reading]).
 
 
@@ -62,3 +72,4 @@ learn([math, reading]).
 like(nothing).
 dislike(nothing).
 asked(nothing).
+
