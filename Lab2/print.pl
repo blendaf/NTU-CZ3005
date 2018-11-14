@@ -1,7 +1,12 @@
+begin(0) :- findnsols(10, X, list(X), _), test(X).
+	
+test(a):- print("something").
+test(X) :- print(X).
 
-bread(a,b,c,d).
+list([a, b, c, d, e]).
 
-printList([H]) :- print(H).
-printList([H|T]) :- printList(T), print(H). 
-
-printLists(0) :- printList([bread]).
+a([spicy, spoon]).
+b([football, fun]).
+c([lullaby]).
+d([hungryhippos, cards]).
+e([thankyou, please]).
