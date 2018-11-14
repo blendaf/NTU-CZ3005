@@ -1,43 +1,61 @@
-ask(0):-	print("Did you"), validate_and_query_options([eat]).
-ask(Y):-
-	generate_options(Y,L), validate_and_query_options(L).
+/* Start query with first subject as eat */
+ask(0):-	print("Did you"), valandquery_first([eat]).
+
+/* check if chosen subject was indeed performed by the child  */ 
+check(Y) :- 
+	like(Y), answerYes(Y); answerNo(0).
 
 
-/* här blir det fel */ 
-askFollow(Y) :- findnsols(100,X,related(Y,X),_), print(X), print("test45").
-
-
-
-
-/* askFollow(Y) :- findnsols(100,X,asked(X),AskedList), list_to_set(L,S), list_to_set(AskedList,A), subtract(S,A,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X))), askFollow(X). */
-/* if s - a +== null, ask(Y) */ 
-
-
-generate_options(Y,L):-
-	like(Y), print("Great... Do you like "), askFollow(Y);
-	print("Huh... May be you like "), findnsols(100,X,random(X),L).
-
-	
-validate_and_query_options(L):-
-	findnsols(100,X,like(X),Likelist), findnsols(100,X,dislike(X),Dislikelist), append(Likelist,Dislikelist,History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(like(X));assert(dislike(X))), ask(X).
+/* If chosen subject not performed by child, ask about another, random, subject */ 
+answerNo(0) :- options_first(L), valandquery_first(L).
+options_first(L):- print("Okey, did you"), findnsols(100,X,random(X),L).
+valandquery_first(L):-
+	findnsols(100,X,like(X),Likelist), findnsols(100,X,dislike(X),Dislikelist), append(Likelist,Dislikelist,History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(like(X));assert(dislike(X))), check(X).
 	
 
+/* If chosen subject performed by child, find related follow up question */
+answerYes(Y) :- options_firstfollowup(Y, L), valandquery_followup(L).
+options_firstfollowup(Y, L) :- print("what more"), findnsols(100, X, related(Y,X), L).
 
-related(eat, X):- print("test2"), play(L),random_member(X, L).
-related(play, X):- print("test1"), play(L),random_member(X, L).
-related(sing, X):- print("test1"), sing(L),random_member(X, L).
-related(game, X):- print("test1"), game(L),random_member(X, L).
+/* Continue finding follow up questions related to the chosen subject */ 
+askFollow(Y) :- options_followup(Y, L), valandquery_followup(L).
+options_followup(Y, L) :- print("what more"), findnsols(100, X, relatedFollow(Y,X), L).
 
 
+
+/* Ask follow up question and add to list asked as to not ask a question more than once */ 
+valandquery_followup(L) :- 
+	findnsols(100,X,asked(X),AskedList), list_to_set(L,S), list_to_set(AskedList,A), subtract(S,A,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X))), askFollow(X).
+
+/* Based upon chosen activity, find a related follow up question */
+related(eat, X):- eat(L),random_member(X, L).
+related(play, X):- play(L),random_member(X, L).
+related(sing, X):- sing(L),random_member(X, L).
+related(game, X):- game(L),random_member(X, L).
+
+/* Find a related question */ 
+relatedFollow(Y, X) :- 
+	eat(L),member(X,L),member(Y,L);
+	play(L),member(X,L),member(Y,L);
+	sing(L),member(X,L),member(Y,L);
+	game(L),member(X,L),member(Y,L);
+	behave(L),member(X,L),member(Y,L).
+
+
+/* Choose random activity */
 random(X):- activity(A), random_member(X,A).
 
-activity([eat, gifts,wine]).
+/* List of subjects */ 
+activity([eat, play, sing, game, behave, talk, learn, c, d, f, g, h]).
 
-eat([spicy, spoon,sweet, full, knife]).
+/* Lists of follow up questions based upon subject */
+eat([spicy, spoon,sweet, full, knife, af, bs, fa, ar, ac, ff]).
 play([football, basketball, pirates, floorball]).
 sing([lullaby,song1,song2, song3]).
 game([hungryhippos, cards, jenga, monopoly]).
 behave([thankyou, please, washup, clean]).
+talk([pokemon, something, hahah]).
+learn([math, reading]).
 
 
 
