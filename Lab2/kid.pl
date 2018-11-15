@@ -15,17 +15,17 @@ valandquery_first(L):-
 
 /* If chosen subject performed by child, find related follow up question */
 answerYes(Y) :- options_firstfollowup(Y, L), valandquery_followup(L).
-options_firstfollowup(Y, L) :- print("what more"), findnsols(100, X, related(Y,X), L).
+options_firstfollowup(Y, L) :- print("what more? "), findnsols(100, X, related(Y,X), L).
 
 /* Continue finding follow up questions related to the chosen subject */ 
 askFollow(Y) :- options_followup(Y, L), valandquery_followup(L).
-options_followup(Y, L) :- print("what more"), findnsols(100, X, relatedFollow(Y,X), L).
+options_followup(Y, L) :- print("what more"), findnsols(100, X, relatedFollow(Y,X), L), print("output of relatedFollow: "), print(L).
 
 
 
 /* Ask follow up question and add to list asked as to not ask a question more than once */ 
 valandquery_followup(L) :- 
-	findnsols(100,X,asked(X),History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X));assert(asked(X))), askFollow(X).
+	print("all related topics: "), print(L), findnsols(100,X,asked(X),History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), print("list minus already asked questions: "), print(Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X));assert(asked(X))), askFollow(X).
 
 
 
@@ -59,7 +59,7 @@ random(X):- activity(A), random_member(X,A).
 activity([eat, play, sing, game, behave, talk, learn, c]).
 
 /* Lists of follow up questions based upon subject */
-eat([spicy, spoon, salty]).
+eat([spicy, spoon, salty, sweet, yummy]).
 play([football, basketball, pirates, floorball]).
 sing([lullaby,song1, song2]).
 game([hungryhippos, cards, monopoly]).
