@@ -29,13 +29,17 @@ askFollow(Y) :- options_followup(Y, L), valandquery_followup(L).
 options_followup(Y, L) :- findnsols(100, X, relatedFollow(Y,X), L).
 
 
-/* Finds all objects in list 'asked', convert to set as to be able to remove all objects 'asked' from list L. */ 
-/* I.e all questions already asked are removed from the list of related follow up questions L */ 
-/* member(X,Remaining) chooses an object (follow up question) of the list Remaining (list of related follow up questions NOT already asked), and asks the follow up question */
-/* The follow up question asked is added to the list 'asked' */
+/* Finds all objects in list 'asked', convert the list to set*/ 
+/* Remove objects in list asked from list\object L result is Remainging. Checks if Remaining is empty*/ 
 valandquery_followup(L) :- 
-	print("all related topics: "), print(L), findnsols(100,X,asked(X),History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Remaining), print("list minus already asked questions: "), print(Remaining), member(X,Remaining), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X));assert(asked(X))), askFollow(X).
+	print("all related topics: "), print(L), findnsols(100,X,asked(X),History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Remaining), print("list minus already asked questions: "), print(Remaining), checkRemaining(Remaining). 
 
+
+/* Checks input list is empty, by pattern match */
+/* If empty, no more follow up questions, ask about another activity */
+checkRemaining([]) :- answerNo(0).
+/* If not empty, ask follow up question and add question to 'asked'*/
+checkRemaining(R) :- member(X,R), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X));assert(asked(X))), askFollow(X).
 
 /* Finds rule to execute based upon pattern match of first input variable */ 
 /* Returns object X which is a random member of the list corresponding to first input variable. */
@@ -65,7 +69,6 @@ relatedFollow(Y, X) :-
 /* Removes already asked about activities from list activity. */
 /* Returns random activity from Remaining objects i.e from list Remaining */
 random(Y) :- activity(A), findnsols(100,X,did(X),Likelist), findnsols(100,X,didNot(X),Dislikelist), append(Likelist,Dislikelist,History), list_to_set(A,S), list_to_set(History,H), subtract(S,H,Remaining), random_member(Y, Remaining).
-
 
 
 /* List of activities */ 
