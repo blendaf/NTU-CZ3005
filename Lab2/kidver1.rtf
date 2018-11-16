@@ -2,208 +2,90 @@
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
 {\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\paperw11900\paperh16840\margl1440\margr1440\vieww28600\viewh18000\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
-\f0\fs24 \cf0 ask(0):-	print("Hey... Do you like "), validate_and_query_options([eat]).\
-ask(Y):-\
-	generate_options(Y,L), validate_and_query_options(L).\
+\f0\fs24 \cf0 /* Start query with first activity as eat */\
+ask(0) :- print("Did you"), valandquery_first([eat]).\
 \
-askFollow(Y) :- print("something"), findnsols(100,X,related(Y,X),_).\
-\
-generate_options(Y,L):-\
-	like(Y), print("if yes"), askFollow(Y);\
-	print("if no"), findnsols(100,X,random(X),L).\
-\
-	\
-validate_and_query_options(L):-\
-	findnsols(100,X,like(X),Likelist), findnsols(100,X,dislike(X),Dislikelist), append(Likelist,Dislikelist,History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(like(X));assert(dislike(X))), ask(X).\
-	\
-\
-related(eat, X):- print("test1"), eat(L),random_member(X, L).\
-related(play, X):- print("test1"), play(L),random_member(X, L).\
-related(sing, X):- print("test1"), sing(L),random_member(X, L).\
-related(game, X):- print("test1"), game(L),random_member(X, L).\
-\
-random(X):-\
-	activity(A), random_member(X,A).\
-\
-activity([eat, play, sing, game, behave]).\
-\
-eat([spicy, spoon,sweet, full, knife]).\
-play([football, basketball, pirates, floorball]).\
-sing([lullaby,song1,song2, song3]).\
-game([hungryhippos, cards, jenga, monopoly]).\
-behave([thankyou, please, washup, clean]).\
-\
-\
-like(nothing).\
-dislike(nothing).\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-ask(0):-	print("Hey... Do you like "), validate_and_query_options([eat]).\
-ask(Y):-\
-	generate_options(Y,L), validate_and_query_options(L).\
-\
-\
-askFollow(Y) :- findnsols(100,X,related(Y,X),_).\
-\
-generate_options(Y,L):-\
-	like(Y), print("Great... Do you like "), askFollow(Y);\
-	print("Huh... May be you like "), findnsols(100,X,random(X),L).\
-\
-	\
-validate_and_query_options(L):-\
-	findnsols(100,X,like(X),Likelist), findnsols(100,X,dislike(X),Dislikelist), append(Likelist,Dislikelist,History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(like(X));assert(dislike(X))), ask(X).\
-	\
-related(eat, X):- print("test2"), play(L),random_member(X, L).\
-related(play, X):- print("test1"), play(L),random_member(X, L).\
-related(sing, X):- print("test1"), sing(L),random_member(X, L).\
-related(game, X):- print("test1"), game(L),random_member(X, L).\
-related(Y, X):- print(Y), game(L),random_member(X, L).\
-\
-random(X):-\
-	activity(A), random_member(X,A).\
-\
-activity([eat, gifts,wine]).\
-\
-eat([spicy, spoon,sweet, full, knife]).\
-play([football, basketball, pirates, floorball]).\
-sing([lullaby,song1,song2, song3]).\
-game([hungryhippos, cards, jenga, monopoly]).\
-behave([thankyou, please, washup, clean]).\
-\
-\
-\
-like(nothing).\
-dislike(nothing).\
-a.\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-ask(0):-	print("Did you"), validate_and_query_options([eat]).\
-ask(Y):-\
-	generate_options(Y,L), validate_and_query_options(L).\
-\
-\
-askFollow(Y) :- findnsols(100,X,related(Y,X),_), print(X), print("test45").\
-\
-/* askFollow(Y) :- findnsols(100,X,asked(X),AskedList), list_to_set(L,S), list_to_set(AskedList,A), subtract(S,A,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X))), askFollow(X). */\
-/* if s - a +== null, ask(Y) */ \
-\
-\
-generate_options(Y,L):-\
-	like(Y), print("Great... Do you like "), askFollow(Y);\
-	print("Huh... May be you like "), findnsols(100,X,random(X),L).\
-\
-	\
-validate_and_query_options(L):-\
-	findnsols(100,X,like(X),Likelist), findnsols(100,X,dislike(X),Dislikelist), append(Likelist,Dislikelist,History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(like(X));assert(dislike(X))), ask(X).\
-	\
-\
-related(eat, X):- print("test2"), play(L),random_member(X, L).\
-related(play, X):- print("test1"), play(L),random_member(X, L).\
-related(sing, X):- print("test1"), sing(L),random_member(X, L).\
-related(game, X):- print("test1"), game(L),random_member(X, L).\
-\
-\
-random(X):- activity(A), random_member(X,A).\
-\
-activity([eat, gifts,wine]).\
-\
-eat([spicy, spoon,sweet, full, knife]).\
-play([football, basketball, pirates, floorball]).\
-sing([lullaby,song1,song2, song3]).\
-game([hungryhippos, cards, jenga, monopoly]).\
-behave([thankyou, please, washup, clean]).\
-\
-\
-\
-like(nothing).\
-dislike(nothing).\
-asked(nothing).\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
-start(0):-	print("Hey! Did you"), validate_query([eat]).\
-\
-\
+/* Check if actibity, Y, is in list did. If yes, execute answerYes. If no execute answerNo */ \
 check(Y) :- \
-	did(Y), print("how was it"), answerYes(Y);\
-	answerNo(0).\
+	did(Y), answerYes(Y); answerNo(0).\
 \
 \
-/* activities */\
-answerNo(0):- generate_options(L) ,validate_query(L).\
-\
-generate_options(L):- print("Huh... Maybe you like "), findnsols(100,X,random(X),L).\
-\
-validate_query(L):-\
-	findnsols(100,X,did(X),Likelist), findnsols(100,X,didNot(X),Dislikelist), append(Likelist,Dislikelist,History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Answer), (Answer==q -> abort;Answer==y -> assert(did(X));assert(didNot(X))), check(X).\
-\
-\
-\
-/* follow up questions */\
-answerYes(Y) :- generate_options_Yes(Y) /*, askFollow(L)*/.\
-\
-generate_options_Yes(Y) :- findnsols(100,X,related(X,Y),L), member(A, L), print(A).\
-\
-askFollow(L) :- \
-	findnsols(100,X,asked(X),AskedList), list_to_set(L,S), list_to_set(AskedList,A), subtract(S,A,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X))), answerYes(X).\
-\
-\
-/* if s - a +== null, ask(Y) */ \
-\
-\
+/* If chosen activity not performed by child, get list L of activities. Ask question based upon list L */ \
+answerNo(0) :- options_first(L), valandquery_first(L).\
+/* Find list of activities, L, based upon random */ \
+options_first(L):- print("Okey, did you"), findnsols(100,X,random(X),L).\
+/* Remove already asked about activities from list L of activites, choose random activity from remaining activities, ask about random activity and add activity to either 'did' or 'didNot' based upon answer */\
+valandquery_first(L):-\
+	findnsols(100,X,did(X),didList), findnsols(100,X,didNot(X),didNotList), append(didList,didNotList,History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Answer), (Answer==q -> abort;Answer==y -> assert(did(X));assert(didNot(X))), check(X).\
 	\
-related(eat, X):- eat(L),random_member(X, L).\
-related(play, X):- print("2"), play(L),random_member(X, L).\
-related(sing, X):- print("3"), sing(L),random_member(X, L).\
-related(game, X):- print("4"), game(L),random_member(X, L).\
 \
-random(X):-\
-	activity(A), random_member(X,A).\
+/* If chosen activity performed by child, get list of related follow up questions (L) corresponding to activity Y */ \
+/* Ask follow up question based upon list L */\
+answerYes(Y) :- options_firstfollowup(Y, L), valandquery_followup(L).\
+/* Finds list L of related follow up questions corresponding to activty Y */\
+options_firstfollowup(Y, L) :- print("what more? "), findnsols(100, X, related(Y,X), L).\
 \
-activity([eat, play, sing, game, behave, a, b, c, d, f, g, h]).\
+/* Finds list of follow up questions, L, related to the previous follow up question Y */\
+/* Ask follow up questin based upon list L */ \
+askFollow(Y) :- options_followup(Y, L), valandquery_followup(L).\
+/* Find list of related follow up questions, L, based upon previous follow up question, Y, using relatedFollow*/\
+options_followup(Y, L) :- print("what more"), findnsols(100, X, relatedFollow(Y,X), L), print("output of relatedFollow: "), print(L).\
 \
-eat([spicy, spoon,sweet, full, knife]).\
+\
+/* Finds all objects in list 'asked', convert to set as to be able to remove all objects 'asked' from list L. */ \
+/* I.e all questions already asked are removed from the list of related follow up questions L */ \
+/* member(X,Valid) chooses an object (follow up question) of the list valid (list of related follow up questions NOT already asked), and asks the follow up question */\
+/* The follow up question asked is added to the list 'asked' */\
+valandquery_followup(L) :- \
+	print("all related topics: "), print(L), findnsols(100,X,asked(X),History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Valid), print("list minus already asked questions: "), print(Valid), member(X,Valid), print(X), print('? y/n/q: '), read(Answer), (Answer==q -> abort;assert(asked(X))), askFollow(X).\
+\
+\
+\
+/* Finds rule to execute based upon pattern match of first input variable */ \
+/* Returns object X which is a random member of the list corresponding to first input variable. */\
+\
+related(eat, X) :- eat(L),random_member(X, L).\
+related(play, X) :- play(L),random_member(X, L).\
+related(sing, X) :- sing(L),random_member(X, L).\
+related(game, X) :- game(L),random_member(X, L).\
+related(behave, X) :- behave(L),random_member(X, L).\
+related(talk, X) :- talk(L),random_member(X, L).\
+related(learn, X) :- learn(L),random_member(X, L).\
+\
+\
+/* Finds object X, which is a member of the same list as object Y */ \
+relatedFollow(Y, X) :- \
+	eat(L),member(Y,L),member(X,L);\
+	play(L),member(Y,L),member(X,L);\
+	sing(L),member(Y,L),member(X,L);\
+	game(L),member(Y,L),member(X,L);\
+	behave(L),member(Y,L),member(X,L);\
+	talk(L),member(Y,L),member(X,L);\
+	learn(L),member(Y,L),member(X,L).\
+\
+\
+/* Returns a random member from list activity */\
+random(X) :- activity(A), random_member(X,A).\
+\
+/* List of activitys */ \
+activity([eat, play, sing, game, behave, talk, learn, c]).\
+\
+/* Lists of follow up questions based upon activity */\
+eat([spicy, spoon, salty, sweet, yummy]).\
 play([football, basketball, pirates, floorball]).\
-sing([lullaby,song1,song2, song3]).\
-game([hungryhippos, cards, jenga, monopoly]).\
-behave([thankyou, please, washup, clean]).\
+sing([lullaby,song1, song2]).\
+game([hungryhippos, cards, monopoly]).\
+behave([thankyou, please, hello]).\
+talk([pokemon, something, something2]).\
+learn([math, reading]).\
 \
-\
+/* lists of activities done, not done */\
 did(nothing).\
 didNot(nothing).\
+/* List of follow up questions asked */\
 asked(nothing).\
+\
 }
