@@ -1,5 +1,5 @@
 /* Start query with first activity as eat */
-ask(0):- print("Did you"), queryActivity([eat]).
+ask(0):- queryActivity([eat]).
 
 
 /* Check if activity, Y, is in list did. If yes, execute answerYes. If no execute answerNo */ 
@@ -10,12 +10,12 @@ checkAnswer(Y) :-
 /* If chosen activity not performed by child, get list L of activities. Ask question based upon list L */ 
 answerNo(0) :- optionsActivity(L), queryActivity(L).
 /* Find activity based upon random */ 
-optionsActivity(L) :- print("Okey, did you"), findnsols(100,X,random(X),L).
-/* Check if there are no more activities to ask about. End code. */
+optionsActivity(L) :- findnsols(100,X,random(X),L).
+/* Check if there are no more activities to ask about. If yes, end code. */
 queryActivity([]) :- print('No more questions').
 /* Ask about activity, L, and add activity to either 'did' or 'didNot' based upon answer */
 queryActivity(L) :-
-	member(X,L), print(X), print('? y/n/q: '), read(Answer), (Answer==q -> abort;Answer==y -> assert(did(X));assert(didNot(X))), checkAnswer(X).
+	print(L), print("Did you"), member(X,L), print(X), print('? y/n/q: '), read(Answer), (Answer==q -> abort;Answer==y -> assert(did(X));assert(didNot(X))), checkAnswer(X).
 	
 
 /* If chosen activity performed by child, get list of related follow up questions (L) corresponding to activity Y */ 
