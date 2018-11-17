@@ -9,12 +9,12 @@ check(Y) :-
 /* If chosen activity not performed by child, get list L of activities. Ask question based upon list L */ 
 answerNo(0) :- options_first(L), valandquery_first(L).
 /* Find activity based upon random */ 
-options_first(L) :- findnsols(100,X,random(X),L).
-/* Check if input list is empty, i.e if there are no more activities to ask about. End execution of code */
+options_first(L) :- print("Okey, did you"), findnsols(100,X,random(X),L).
+/* Check if there are no more activities to ask about. End code. */
 valandquery_first([]) :- print('No more questions').
 /* Ask about activity, L, and add activity to either 'did' or 'didNot' based upon answer */
 valandquery_first(L) :-
-	print("Okey, did you"), member(X,L), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(did(X));assert(didNot(X))), check(X).
+	member(X,L), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(did(X));assert(didNot(X))), check(X).
 	
 
 /* If chosen activity performed by child, get list of related follow up questions (L) corresponding to activity Y */ 
