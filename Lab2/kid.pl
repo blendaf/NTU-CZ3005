@@ -1,39 +1,40 @@
 /* Start query with first activity as eat */
-ask(0):- print("Did you"), valandquery_first([eat]).
+ask(0):- print("Did you"), queryActivity([eat]).
+
 
 /* Check if activity, Y, is in list did. If yes, execute answerYes. If no execute answerNo */ 
-check(Y) :- 
+checkAnswer(Y) :- 
 	did(Y), answerYes(Y); answerNo(0).
 
 
 /* If chosen activity not performed by child, get list L of activities. Ask question based upon list L */ 
-answerNo(0) :- options_first(L), valandquery_first(L).
+answerNo(0) :- optionsActivity(L), queryActivity(L).
 /* Find activity based upon random */ 
-options_first(L) :- print("Okey, did you"), findnsols(100,X,random(X),L).
+optionsActivity(L) :- print("Okey, did you"), findnsols(100,X,random(X),L).
 /* Check if there are no more activities to ask about. End code. */
-valandquery_first([]) :- print('No more questions').
+queryActivity([]) :- print('No more questions').
 /* Ask about activity, L, and add activity to either 'did' or 'didNot' based upon answer */
-valandquery_first(L) :-
-	member(X,L), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(did(X));assert(didNot(X))), check(X).
+queryActivity(L) :-
+	member(X,L), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(did(X));assert(didNot(X))), checkAnswer(X).
 	
 
 /* If chosen activity performed by child, get list of related follow up questions (L) corresponding to activity Y */ 
 /* Ask follow up question based upon list L */
-answerYes(Y) :- options_firstfollowup(Y, L), valandquery_followup(L).
+answerYes(Y) :- optionsFirstFollowUp(Y, L), queryFollowUp(L).
 /* Finds list L of related follow up questions corresponding to activty Y */
-options_firstfollowup(Y, L) :- findnsols(100, X, related(Y,X), L).
+optionsFirstFollowUp(Y, L) :- findnsols(100, X, related(Y,X), L).
 
 
 /* Finds list of follow up questions, L, related to the previous follow up question Y */
 /* Ask follow up questin based upon list L */ 
-askFollow(Y) :- options_followup(Y, L), valandquery_followup(L).
-/* Find list of related follow up questions, L, based upon previous follow up question, Y, using relatedFollow*/
-options_followup(Y, L) :- findnsols(100, X, relatedFollow(Y,X), L).
+askFollowUp(Y) :- optionsFollowUp(Y, L), queryFollowUp(L).
+/* Find list of related follow up questions, L, based upon previous follow up question, Y, using relatedFollowUp*/
+optionsFollowUp(Y, L) :- findnsols(100, X, relatedFollowUp(Y,X), L).
 
 
 /* Finds all objects in list 'asked', convert the list to set*/ 
 /* Remove objects in list asked from list\object L result is Remainging. Checks if Remaining is empty*/ 
-valandquery_followup(L) :- 
+queryFollowUp(L) :- 
 	findnsols(100,X,asked(X),Asked), list_to_set(L,S), list_to_set(Asked,A), subtract(S,A,Remaining), checkRemaining(Remaining). 
 
 
@@ -41,7 +42,8 @@ valandquery_followup(L) :-
 /* If empty, no more follow up questions, ask about another activity */
 checkRemaining([]) :- answerNo(0).
 /* If not empty, ask follow up question and add question to 'asked'*/
-checkRemaining(R) :- member(X,R), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X));assert(asked(X))), askFollow(X).
+checkRemaining(R) :- member(X,R), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X));assert(asked(X))), askFollowUp(X).
+
 
 /* Finds rule to execute based upon pattern match of first input variable */ 
 /* Returns object X which is a random member of the list corresponding to first input variable. */
@@ -57,7 +59,7 @@ related('skip ropes', X):- rope(L),random_member(X, L).
 
 
 /* Finds object X, which is a member of the same list as object Y  */ 
-relatedFollow(Y, X) :- 
+relatedFollowUp(Y, X) :- 
 	eat(L),member(X,L),member(Y,L);
 	play(L),member(X,L),member(Y,L);
 	sing(L),member(X,L),member(Y,L);
@@ -68,16 +70,14 @@ relatedFollow(Y, X) :-
 	bike(L),member(X,L),member(Y,L);
 	rope(L),member(X,L),member(Y,L).
 
+
 /* Removes already asked about activities from list activity. */
 /* Returns random activity from Remaining objects i.e from list Remaining */
 random(Y) :- activity(A), findnsols(100,X,did(X),DidList), findnsols(100,X,didNot(X),DidNotList), append(DidList,DidNotList,History), list_to_set(A,S), list_to_set(History,H), subtract(S,H,Remaining), random_member(Y, Remaining).
 
 
-
 /* List of activities */ 
 activity([eat, play, sing, 'play games', behave, talk, learn, 'ride a bike', 'skip ropes']).
-
-
 /* Lists of follow up questions based upon activity */
 eat(['was it spicy', 'did you use a spoon', 'was it sweet', 'was it salty', 'was it yummy']).
 play(['did you play football', 'did you play basketball', 'did you play pirates', 'did you play floorball']).
