@@ -1,5 +1,5 @@
 /* Start query with first activity as eat */
-ask(0):-	print("Did you"), valandquery_first([eat]).
+ask(0):- print("Did you"), valandquery_first([eat]).
 
 /* Check if activity, Y, is in list did. If yes, execute answerYes. If no execute answerNo */ 
 check(Y) :- 
@@ -9,10 +9,12 @@ check(Y) :-
 /* If chosen activity not performed by child, get list L of activities. Ask question based upon list L */ 
 answerNo(0) :- options_first(L), valandquery_first(L).
 /* Find activity based upon random */ 
-options_first(L) :- print("Okey, did you"), findnsols(100,X,random(X),L).
+options_first(L) :- findnsols(100,X,random(X),L).
+/* Check if input list is empty, i.e if there are no more activities to ask about. End execution of code */
+valandquery_first([]) :- print('No more questions').
 /* Ask about activity, L, and add activity to either 'did' or 'didNot' based upon answer */
 valandquery_first(L) :-
-	member(X,L), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(did(X));assert(didNot(X))), check(X).
+	print("Okey, did you"), member(X,L), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(did(X));assert(didNot(X))), check(X).
 	
 
 /* If chosen activity performed by child, get list of related follow up questions (L) corresponding to activity Y */ 
@@ -50,8 +52,8 @@ related('play games', X):- game(L),random_member(X, L).
 related(behave, X):- behave(L),random_member(X, L).
 related(talk, X):- talk(L),random_member(X, L).
 related(learn, X):- learn(L),random_member(X, L).
-related('ride a bike', X):- learn(L),random_member(X, L).
-related('skip ropes', X):- learn(L),random_member(X, L).
+related('ride a bike', X):- bike(L),random_member(X, L).
+related('skip ropes', X):- rope(L),random_member(X, L).
 
 
 /* Finds object X, which is a member of the same list as object Y  */ 
@@ -69,6 +71,7 @@ relatedFollow(Y, X) :-
 /* Removes already asked about activities from list activity. */
 /* Returns random activity from Remaining objects i.e from list Remaining */
 random(Y) :- activity(A), findnsols(100,X,did(X),DidList), findnsols(100,X,didNot(X),DidNotList), append(DidList,DidNotList,History), list_to_set(A,S), list_to_set(History,H), subtract(S,H,Remaining), random_member(Y, Remaining).
+
 
 
 /* List of activities */ 
