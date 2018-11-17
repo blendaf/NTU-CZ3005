@@ -9,7 +9,7 @@ check(Y) :-
 /* If chosen activity not performed by child, get list L of activities. Ask question based upon list L */ 
 answerNo(0) :- options_first(L), valandquery_first(L).
 /* Find activity based upon random */ 
-options_first(L) :- print("Okey, did you"), findnsols(100,X,random(X),L), print(L).
+options_first(L) :- print("Okey, did you"), findnsols(100,X,random(X),L).
 /* Ask about activity, L, and add activity to either 'did' or 'didNot' based upon answer */
 valandquery_first(L) :-
 	member(X,L), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(did(X));assert(didNot(X))), check(X).
@@ -32,7 +32,7 @@ options_followup(Y, L) :- findnsols(100, X, relatedFollow(Y,X), L).
 /* Finds all objects in list 'asked', convert the list to set*/ 
 /* Remove objects in list asked from list\object L result is Remainging. Checks if Remaining is empty*/ 
 valandquery_followup(L) :- 
-	print("all related topics: "), print(L), findnsols(100,X,asked(X),History), list_to_set(L,S), list_to_set(History,H), subtract(S,H,Remaining), print("list minus already asked questions: "), print(Remaining), checkRemaining(Remaining). 
+	findnsols(100,X,asked(X),Asked), list_to_set(L,S), list_to_set(Asked,A), subtract(S,A,Remaining), checkRemaining(Remaining). 
 
 
 /* Checks input list is empty, by pattern match */
@@ -68,7 +68,7 @@ relatedFollow(Y, X) :-
 
 /* Removes already asked about activities from list activity. */
 /* Returns random activity from Remaining objects i.e from list Remaining */
-random(Y) :- activity(A), findnsols(100,X,did(X),Likelist), findnsols(100,X,didNot(X),Dislikelist), append(Likelist,Dislikelist,History), list_to_set(A,S), list_to_set(History,H), subtract(S,H,Remaining), random_member(Y, Remaining).
+random(Y) :- activity(A), findnsols(100,X,did(X),DidList), findnsols(100,X,didNot(X),DidNotList), append(DidList,DidNotList,History), list_to_set(A,S), list_to_set(History,H), subtract(S,H,Remaining), random_member(Y, Remaining).
 
 
 /* List of activities */ 
@@ -77,14 +77,14 @@ activity([eat, play, sing, 'play games', behave, talk, learn, 'ride a bike', 'sk
 
 /* Lists of follow up questions based upon activity */
 eat(['was it spicy', 'did you use a spoon', 'was it sweet', 'was it salty', 'was it yummy']).
-play([football, basketball, pirates, floorball]).
-sing([lullaby,song1, song2]).
-game([hungryhippos, cards, monopoly]).
-behave([thankyou, please, hello]).
-talk([pokemon, something, something2]).
-learn([math, reading]).
-bike([]).
-rope([]).
+play(['did you play football', 'did you play basketball', 'did you play pirates', 'did you play floorball']).
+sing(['did you sing let it go' ,'did you sing ipsy dipsy spider', 'did you sing the ABC-song']).
+game(['hungry hippos', cards, monopoly, 'did you win']).
+behave(['did you say thank you', 'did you say please' , 'did you help clean up']).
+talk(['about pokemon', 'about the weather', 'about lego']).
+learn([counting, reading, spelling]).
+bike(['did you fall', 'did you wear a helmet']).
+rope(['was it fun']).
 
 /* lists of activities done, not done */
 did(nothing).
