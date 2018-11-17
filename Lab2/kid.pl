@@ -15,7 +15,7 @@ optionsActivity(L) :- print("Okey, did you"), findnsols(100,X,random(X),L).
 queryActivity([]) :- print('No more questions').
 /* Ask about activity, L, and add activity to either 'did' or 'didNot' based upon answer */
 queryActivity(L) :-
-	member(X,L), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(did(X));assert(didNot(X))), checkAnswer(X).
+	member(X,L), print(X), print('? y/n/q: '), read(Answer), (Answer==q -> abort;Answer==y -> assert(did(X));assert(didNot(X))), checkAnswer(X).
 	
 
 /* If chosen activity performed by child, get list of related follow up questions (L) corresponding to activity Y */ 
@@ -42,7 +42,7 @@ queryFollowUp(L) :-
 /* If empty, no more follow up questions, ask about another activity */
 checkRemaining([]) :- answerNo(0).
 /* If not empty, ask follow up question and add question to 'asked'*/
-checkRemaining(R) :- member(X,R), print(X), print('? y/n/q: '), read(Like), (Like==q -> abort;Like==y -> assert(asked(X));assert(asked(X))), askFollowUp(X).
+checkRemaining(R) :- member(X,R), print(X), print('? y/n/q: '), read(Answer), (Answer==q -> abort;assert(asked(X))), askFollowUp(X).
 
 
 /* Finds rule to execute based upon pattern match of first input variable */ 
